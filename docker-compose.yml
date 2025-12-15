@@ -1,0 +1,44 @@
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  iot_controller:
+    build: ./iot_controller
+    container_name: iot_controller
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+      - rabbitmq
+    env_file:
+      - .env
+
+  rule_engine:
+    build: ./rule_engine
+    container_name: rule_engine
+    depends_on:
+      - mongodb
+      - rabbitmq
+    env_file:
+      - .env
+
+  data_simulator:
+    build: ./data_simulator
+    container_name: data_simulator
+    depends_on:
+      - iot_controller
+
+volumes:
+  mongo_data:
