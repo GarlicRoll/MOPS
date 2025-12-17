@@ -27,11 +27,6 @@ services:
       - logstash
     env_file:
       - .env
-    logging:
-      driver: "json-file"
-    labels:
-      co.elastic.logs/enabled: "true"
-      co.elastic.logs/module: "json"
 
   rule_engine:
     build:
@@ -44,8 +39,6 @@ services:
       - logstash
     env_file:
       - .env
-    logging:
-      driver: "json-file"
 
   data_simulator:
     build:
@@ -57,8 +50,6 @@ services:
       - logstash
     env_file:
       - .env
-    logging:
-      driver: "json-file"
 
   prometheus:
     image: prom/prometheus
@@ -91,17 +82,9 @@ services:
     volumes:
       - ./elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
     ports:
-      - "5044:5044"
+      - "5000:5000"
     depends_on:
       - elasticsearch
-
-  filebeat:
-    build: ./elk/filebeat
-    container_name: filebeat
-    volumes:
-      - /var/run/docker-cli.sock:/var/run/docker.sock:rw
-    depends_on:
-      - logstash
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.11.1
