@@ -1,5 +1,11 @@
 from app.state import update_window
 from app.db import save_alert
+from app.metrics import (
+    PACKETS_PROCESSED,
+    INSTANT_ALERTS,
+    DURATION_ALERTS
+)
+
 
 # параметры правил
 DEVICE_ID = 1
@@ -7,11 +13,13 @@ THRESHOLD = 5
 WINDOW_SIZE = 10
 
 def process_packet(packet: dict):
+    PACKETS_PROCESSED.inc()
     device_id = packet["device_id"]
     value_a = packet["A"]
 
     # мгновенное правило
     if device_id == DEVICE_ID and value_a > THRESHOLD:
+        INSTANT_ALERTS.inc()
         save_alert({
             "type": "instant",
             "device_id": device_id,
@@ -27,6 +35,7 @@ def process_packet(packet: dict):
         and len(window) == WINDOW_SIZE
         and all(v > THRESHOLD for v in window)
     ):
+        DURATION_ALERTS.inc()
         save_alert({
             "type": "duration",
             "device_id": device_id,

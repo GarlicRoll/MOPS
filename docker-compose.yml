@@ -15,30 +15,101 @@ services:
       - "15672:15672"
 
   iot_controller:
-    build: ./iot_controller
+    build:
+      context: .
+      dockerfile: iot_controller/Dockerfile
     container_name: iot_controller
     ports:
       - "8000:8000"
     depends_on:
       - mongodb
       - rabbitmq
+      - logstash
     env_file:
       - .env
+    logging:
+      driver: "json-file"
+    labels:
+      co.elastic.logs/enabled: "true"
+      co.elastic.logs/module: "json"
 
   rule_engine:
-    build: ./rule_engine
+    build:
+      context: .
+      dockerfile: rule_engine/Dockerfile
     container_name: rule_engine
     depends_on:
       - mongodb
       - rabbitmq
+      - logstash
     env_file:
       - .env
+    logging:
+      driver: "json-file"
 
   data_simulator:
-    build: ./data_simulator
+    build:
+      context: .
+      dockerfile: data_simulator/Dockerfile
     container_name: data_simulator
     depends_on:
       - iot_controller
+      - logstash
+    env_file:
+      - .env
+    logging:
+      driver: "json-file"
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+  # elk
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    container_name: elasticsearch
+    volumes:
+      - ./elk/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - "9200:9200"
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.1
+    container_name: logstash
+    volumes:
+      - ./elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    ports:
+      - "5044:5044"
+    depends_on:
+      - elasticsearch
+
+  filebeat:
+    build: ./elk/filebeat
+    container_name: filebeat
+    volumes:
+      - /var/run/docker-cli.sock:/var/run/docker.sock:rw
+    depends_on:
+      - logstash
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.1
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
 
 volumes:
   mongo_data:

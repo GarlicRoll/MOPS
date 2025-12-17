@@ -2,9 +2,10 @@ FROM python:3.13
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY rule_engine/requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY app/ app/
+COPY rule_engine/app app
+COPY common common
 
 CMD ["python", "-m", "app.main"]
