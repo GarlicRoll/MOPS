@@ -1,3 +1,7 @@
+Многоуровневая Организация Прог. Сис
+Пименов Глеб Андреевич 506758
+P4115
+
 <img width="1656" height="2339" alt="МОПС-02" src="https://github.com/user-attachments/assets/7bf9542a-ef87-4640-adb5-bcd76048890e" />
 <img width="1656" height="2339" alt="МОПС-03" src="https://github.com/user-attachments/assets/26e95f1a-c109-4889-9af2-6a48f65f88db" />
 <img width="1656" height="2339" alt="МОПС-04" src="https://github.com/user-attachments/assets/4a6fb590-cfdd-4b94-85e9-886b15b1e7d1" />
