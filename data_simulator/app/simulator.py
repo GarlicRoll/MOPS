@@ -46,7 +46,7 @@ def build_device_profiles(cfg: dict):
 async def send_packet(client: httpx.AsyncClient, device_id: int, profile: dict):
     packet = {
         "device_id": device_id,
-        "timestamp": datetime.now(timezone.utc)
+        "timestamp": int(datetime.utcnow().timestamp())
     }
 
     for field, limits in profile.items():

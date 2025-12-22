@@ -12,5 +12,5 @@ db = client[MONGO_DB]
 alerts = db[MONGO_COLLECTION]
 
 def save_alert(alert: dict):
-    alert["timestamp"] = datetime.now(timezone.utc)
+    alert["timestamp"] = int(datetime.utcnow().timestamp())
     alerts.insert_one(alert)
