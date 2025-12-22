@@ -1,0 +1,26 @@
+rules:
+  - id: high_temperature
+    type: instant
+    field: temperature
+    operator: ">"
+    value: 80
+    severity: critical
+    message: "Temperature is too high"
+
+  - id: low_battery
+    type: instant
+    field: battery
+    operator: "<"
+    value: 15
+    severity: warning
+    message: "Battery level is low"
+
+  - id: overheating_long
+    type: duration
+    field: temperature
+    operator: ">"
+    value: 75
+    count: 10
+    entity_field: device_id
+    severity: critical
+    message: "Overheating for more than 10 events on the same device"

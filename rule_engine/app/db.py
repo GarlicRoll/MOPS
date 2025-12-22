@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 MONGO_HOST = os.getenv("MONGO_HOST", "mongodb")
 MONGO_PORT = int(os.getenv("MONGO_PORT", 27017))
@@ -12,5 +12,5 @@ db = client[MONGO_DB]
 alerts = db[MONGO_COLLECTION]
 
 def save_alert(alert: dict):
-    alert["created_at"] = datetime.utcnow()
+    alert["timestamp"] = datetime.now(timezone.utc)
     alerts.insert_one(alert)

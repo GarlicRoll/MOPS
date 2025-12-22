@@ -9,8 +9,3 @@ PACKETS_SAVED = Counter(
     "iot_packets_saved_total",
     "Total number of packets saved to MongoDB"
 )
-
-PACKET_PROCESSING_TIME = Histogram(
-    "iot_packet_processing_seconds",
-    "Time spent processing IoT packets"
-)

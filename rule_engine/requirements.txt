@@ -2,3 +2,4 @@ pika
 pymongo
 python-dotenv
 prometheus-client
+PyYAML

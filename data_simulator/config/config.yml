@@ -1,0 +1,25 @@
+simulator:
+  devices_count: 10
+  messages_per_second: 1
+
+telemetry:
+  battery:
+    min: 10
+    max: 100
+
+  temperature:
+    min: 20
+    max: 80
+
+scenarios:
+  - device_id: 1
+    overrides:
+      temperature:
+        min: 80
+        max: 90
+
+  - device_id: 2
+    overrides:
+      battery:
+        min: 5
+        max: 15

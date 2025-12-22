@@ -1,7 +1,7 @@
 import pika
 import json
 import os
-from app.rules import process_packet
+from app.engine import RuleEngine
 
 RABBIT_HOST = os.getenv("RABBIT_HOST", "rabbitmq")
 RABBIT_PORT = int(os.getenv("RABBIT_PORT", 5672))
@@ -20,7 +20,7 @@ params = pika.ConnectionParameters(
     credentials=credentials
 )
 
-def start_consumer():
+def start_consumer(engine : RuleEngine):
     connection = pika.BlockingConnection(params)
     channel = connection.channel()
 
@@ -39,7 +39,7 @@ def start_consumer():
 
     def callback(ch, method, properties, body):
         packet = json.loads(body)
-        process_packet(packet)
+        engine.process_event(packet)
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     channel.basic_consume(
